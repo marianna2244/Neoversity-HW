@@ -1,0 +1,24 @@
+from pathlib import Path
+
+
+def get_cats_info(path):
+    cats = []
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                cat_id, name, age = line.split(",")
+                cats.append({"id": cat_id, "name": name, "age": age})
+    except FileNotFoundError:
+        print(f"Файл не знайдено: {path}")
+    except ValueError:
+        print("Помилка формату даних у файлі.")
+    return cats
+
+
+if __name__ == "__main__":
+    path = Path("/Users/macos/Desktop/Projects/HW6/cats_file.txt")
+    cats_info = get_cats_info(path)
+    print(cats_info)
