@@ -1,0 +1,48 @@
+import sys
+from pathlib import Path
+
+try:
+    from colorama import init, Fore
+    init(autoreset=True)
+except ModuleNotFoundError:
+    class Fore:
+        RED = ""
+        GREEN = ""
+        BLUE = ""
+        YELLOW = ""
+
+def show_directory(path, level=0):
+    try:
+        items = sorted(path.iterdir(), key=lambda x: (x.is_file(), x.name.lower()))
+    except PermissionError:
+        print(" " * (level * 2) + Fore.RED + "[NO ACCESS]")
+        return
+
+    for item in items:
+        indent = " " * (level * 2)
+
+        if item.is_dir():
+            print(indent + Fore.BLUE + "📂 " + item.name)
+            show_directory(item, level + 1)
+        else:
+            print(indent + Fore.YELLOW + "📜 " + item.name)
+
+def main():
+    if len(sys.argv) == 2:
+        directory = Path(sys.argv[1])
+    else:
+        directory = Path("/Users/macos/Desktop/Projects/HW6")
+
+    if not directory.exists():
+        print(Fore.RED + "Path does not exist")
+        sys.exit(1)
+
+    if not directory.is_dir():
+        print(Fore.RED + "Not a directory")
+        sys.exit(1)
+
+    print(Fore.GREEN + "📦 " + directory.name)
+    show_directory(directory)
+
+if __name__ == "__main__":
+    main()
